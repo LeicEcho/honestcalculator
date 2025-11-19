@@ -47,8 +47,8 @@
 <body>
 
 <div class="container">
-    <h1>⚡ Bottleneck Calc V1.0</h1>
-    <p class="subtitle">Análisis de Hardware Honesto por <strong>Leicecho</strong></p>
+    <h1>⚡ Bottleneck Calc V2.3</h1>
+    <p class="subtitle">Base de datos masiva (Latinoamérica + Global)</p>
 
     <div class="input-group">
         <label>1. Tu Procesador (CPU)</label>
@@ -80,7 +80,6 @@
 
 <script>
     // --- BASE DE DATOS EXPANDIDA (TOP 50 STEAM + LATAM MARKET) ---
-    // Scores basados en PassMark Multi-Thread (CPU) y G3D Mark (GPU) - Nov 2025
     const hardwareData = {
       "cpus": [
         { "name": "--- GAMA ULTRA / ENTHUSIAST ---", "score": 0 },
@@ -178,20 +177,16 @@
         const resultDiv = document.getElementById('resultado');
 
         if (cpuScore === 0 || gpuScore === 0 || isNaN(cpuScore) || isNaN(gpuScore)) {
-            // Evitar que calculen seleccionando un título
             if (cpuScore === 0 || gpuScore === 0) return; 
             alert("Por favor selecciona componentes válidos");
             return;
         }
 
-        // --- LÓGICA DINÁMICA V2.3 (Ajustada para Gamers Low-End) ---
         let scaleFactor = 1.1; 
-        
-        // Ajuste fino de curvas de potencia
-        if (gpuScore > 30000) { scaleFactor = 1.9; }       // Ultra High
-        else if (gpuScore > 20000) { scaleFactor = 1.6; }  // High
-        else if (gpuScore > 10000) { scaleFactor = 1.35; } // Mid
-        else { scaleFactor = 1.1; }                        // Low / Entry
+        if (gpuScore > 30000) { scaleFactor = 1.9; }       
+        else if (gpuScore > 20000) { scaleFactor = 1.6; }  
+        else if (gpuScore > 10000) { scaleFactor = 1.35; } 
+        else { scaleFactor = 1.1; }                        
 
         const adjustedGpuScore = gpuScore * scaleFactor;
         
@@ -203,7 +198,6 @@
 
         let titulo, texto, clase, colorBarra, porcentajeBarra;
 
-        // Calibración de zonas de diagnóstico
         if (ratio > 1.45) {
             clase = "warning";
             titulo = "⚠️ GPU LIMITANTE (Cuello Gráfico)";
@@ -212,7 +206,7 @@
         } else if (ratio < 0.75) {
             clase = "danger";
             titulo = "🛑 CPU LIMITANTE (Cuello de Procesador)";
-            texto = "Tu procesador no puede seguirle el ritmo a la gráfica. Tendrás FPS inestables y tirones (stuttering) en juegos modernos.";
+            texto = "Tu procesador no puede seguirle el ritmo a la gráfica. Tendrás FPS inestables y tirones.";
             colorBarra = "#dc3545"; porcentajeBarra = "20%";
         } else {
             clase = "safe";
