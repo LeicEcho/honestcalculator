@@ -3,89 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculadora de Cuello de Botella (Bottleneck) precisa y honesta. Descubre si tu CPU frena a tu GPU con datos reales de benchmarks.">
+    <meta name="description" content="Calculadora de Cuello de Botella (Bottleneck) precisa. Descubre si tu CPU frena a tu GPU con datos reales. Herramienta gratuita para PC Gamers.">
     <meta name="author" content="Leicecho">
-    <meta name="keywords" content="bottleneck calculator, cuello de botella pc, calculadora cpu gpu, bottleneck checker">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://leicecho.github.io/honestcalculator/">
+    <meta name="keywords" content="bottleneck calculator, cuello de botella pc, calculadora cpu gpu, bottleneck checker, fps calculator">
     <meta property="og:title" content="⚡ Analizador de Cuello de Botella Honesto">
-    <meta property="og:description" content="¿Tu PC está equilibrada? Prueba esta herramienta gratuita basada en algoritmos dinámicos y benchmarks reales. Sin mentiras.">
-    
-    <title>Analizador de Cuello de Botella Honesto | Leicecho</title>
-    
+    <meta property="og:description" content="¿Tu PC está equilibrada? Prueba esta herramienta gratuita. Sin mentiras.">
+    <title>Calculadora de Cuello de Botella PC | Leicecho</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; align-items: center; margin: 0; }
-        .container { width: 100%; max-width: 600px; background: #1e1e1e; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #333; }
-        h1 { text-align: center; color: #00d2ff; margin-bottom: 5px; font-size: 1.8rem; }
-        .subtitle { text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 30px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .main-wrapper { width: 100%; max-width: 800px; padding: 20px; box-sizing: border-box; }
         
-        .input-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #bbb; }
-        select { width: 100%; padding: 12px; background: #2c2c2c; color: #fff; border: 1px solid #444; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; }
+        /* CALCULADORA */
+        .container { background: #1e1e1e; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #333; margin-bottom: 40px; }
+        h1 { text-align: center; color: #00d2ff; margin-bottom: 5px; font-size: 2rem; }
+        .subtitle { text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 30px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #bbb; margin-top: 15px; }
+        select { width: 100%; padding: 12px; background: #2c2c2c; color: #fff; border: 1px solid #444; border-radius: 8px; font-size: 1rem; outline: none; }
         select:focus { border-color: #00d2ff; background: #333; }
-
-        button { width: 100%; padding: 15px; margin-top: 10px; background: linear-gradient(45deg, #00d2ff, #007bff); color: #fff; font-weight: bold; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3); }
+        button { width: 100%; padding: 15px; margin-top: 20px; background: linear-gradient(45deg, #00d2ff, #007bff); color: #fff; font-weight: bold; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
         button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5); }
 
+        /* RESULTADOS */
         #resultado { margin-top: 25px; padding: 20px; border-radius: 10px; display: none; animation: fadeIn 0.5s ease; }
-        
         .safe { background: rgba(21, 87, 36, 0.2); border: 1px solid #155724; color: #75b798; }
         .warning { background: rgba(133, 100, 4, 0.2); border: 1px solid #856404; color: #ffdf7e; }
         .danger { background: rgba(114, 28, 36, 0.2); border: 1px solid #721c24; color: #ea868f; }
+        .meter-container { width: 100%; background: #444; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden; }
+        .meter-fill { height: 100%; transition: width 1s ease; }
+        .debug-info { font-size: 0.75rem; color: #555; margin-top: 10px; text-align: right; font-family: monospace; }
 
-        .meter-container { width: 100%; background: #444; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden; position: relative; }
-        .meter-fill { height: 100%; background: #888; width: 50%; transition: width 1s ease; }
-        
-        .debug-info { font-size: 0.75rem; color: #555; margin-top: 20px; text-align: right; font-family: monospace; }
-        
-        footer { text-align: center; margin-top: 30px; color: #555; font-size: 0.8rem; }
+        /* BOTÓN DE COMPRA (MONETIZACIÓN) */
+        #amazonBtn { display: block; width: 100%; text-align: center; padding: 12px; margin-top: 15px; background: #f90; color: #000; font-weight: bold; text-decoration: none; border-radius: 5px; transition: 0.3s; }
+        #amazonBtn:hover { background: #ffac33; }
 
+        /* SEO TEXT */
+        .seo-section { color: #ccc; line-height: 1.6; background: #181818; padding: 20px; border-radius: 10px; }
+        .seo-section h2 { color: #00d2ff; font-size: 1.5rem; margin-top: 0; }
+        .seo-section h3 { color: #fff; margin-top: 20px; }
+        
+        footer { text-align: center; margin-top: 50px; color: #555; font-size: 0.8rem; padding-bottom: 20px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>⚡ Bottleneck Calc V2.3</h1>
-    <p class="subtitle">Base de datos masiva (Latinoamérica + Global)</p>
+<div class="main-wrapper">
+    <div class="container">
+        <h1>⚡ Bottleneck Calc V3.0</h1>
+        <p class="subtitle">Herramienta de Análisis de Hardware - Versión Final</p>
 
-    <div class="input-group">
         <label>1. Tu Procesador (CPU)</label>
         <select id="cpuSelect"><option value="0">-- Selecciona CPU --</option></select>
-    </div>
 
-    <div class="input-group">
         <label>2. Tu Tarjeta Gráfica (GPU)</label>
         <select id="gpuSelect"><option value="0">-- Selecciona GPU --</option></select>
-    </div>
 
-    <div class="input-group">
         <label>3. Resolución de Monitor</label>
         <select id="resolution">
             <option value="1080">1080p Full HD (Estándar)</option>
             <option value="1440">1440p Quad HD (Gamer)</option>
             <option value="2160">4K Ultra HD (Entusiasta)</option>
         </select>
+
+        <button onclick="calcularBottleneck()">ANALIZAR COMPATIBILIDAD</button>
+
+        <div id="resultado"></div>
     </div>
 
-    <button onclick="calcularBottleneck()">ANALIZAR COMPATIBILIDAD</button>
+    <article class="seo-section">
+        <h2>¿Qué es el Cuello de Botella en una PC?</h2>
+        <p>El cuello de botella (bottleneck) ocurre cuando un componente de tu computadora limita el rendimiento de otro. Es como tener un motor de Ferrari en un auto con llantas de bicicleta.</p>
+        
+        <h3>¿Cómo funciona esta calculadora?</h3>
+        <p>A diferencia de otras calculadoras genéricas, nuestra herramienta utiliza un algoritmo dinámico (Engine V2.5) que adapta los puntajes de benchmarks reales según la resolución de tu monitor y la arquitectura específica de gaming (como la tecnología 3D V-Cache de AMD).</p>
+        
+        <h3>¿Es malo tener cuello de botella?</h3>
+        <ul>
+            <li><strong>Cuello de CPU:</strong> Es el más molesto. Causa "stuttering" (tirones) y bajones de FPS.</li>
+            <li><strong>Cuello de GPU:</strong> Es normal. Significa que estás usando el 100% de tu tarjeta gráfica, que es lo ideal en juegos.</li>
+        </ul>
+    </article>
 
-    <div id="resultado"></div>
-    
     <footer>
-        &copy; 2025 Leicecho. Datos basados en PassMark™ & Steam Hardware Survey.
+        &copy; 2025 Leicecho. Todos los derechos reservados.<br>
+        Datos basados en PassMark™ & Steam Hardware Survey.
     </footer>
 </div>
 
 <script>
     // --- BASE DE DATOS V2.5 (GAMING TUNED) ---
-    // Ajuste manual: Los puntajes de X3D y CPUs High-End han sido inflados 
-    // para reflejar rendimiento en JUEGOS, no en renderizado.
     const hardwareData = {
       "cpus": [
         { "name": "--- GAMA ULTRA / ENTHUSIAST ---", "score": 0 },
-        // El 7800X3D es el rey del gaming, le damos puntaje GOD TIER manual
         { "name": "AMD Ryzen 7 7800X3D (God Tier Gaming)", "score": 85000 }, 
         { "name": "AMD Ryzen 9 7950X3D", "score": 82000 },
         { "name": "Intel Core i9-14900K / 13900K", "score": 78000 },
@@ -93,7 +102,6 @@
         
         { "name": "--- GAMA ALTA (High End) ---", "score": 0 },
         { "name": "Intel Core i7-14700K / 13700K", "score": 60000 },
-        // El 5800X3D rinde mucho más en juegos que en benchmarks
         { "name": "AMD Ryzen 7 5800X3D", "score": 55000 }, 
         { "name": "Intel Core i5-13600K", "score": 45000 },
         { "name": "AMD Ryzen 7 7700X", "score": 42000 },
@@ -158,15 +166,11 @@
         datos.forEach(item => {
             const option = new Option(item.name, item.score);
             if (item.score === 0) {
-                option.disabled = true;
-                option.style.fontWeight = "bold";
-                option.style.color = "#00d2ff";
-                option.style.backgroundColor = "#222";
+                option.disabled = true; option.style.fontWeight = "bold"; option.style.color = "#00d2ff"; option.style.backgroundColor = "#222";
             }
             select.add(option);
         });
     }
-
     llenarLista(cpuSelect, hardwareData.cpus);
     llenarLista(gpuSelect, hardwareData.gpus);
 
@@ -176,13 +180,9 @@
         const resolution = parseInt(document.getElementById('resolution').value);
         const resultDiv = document.getElementById('resultado');
 
-        if (cpuScore === 0 || gpuScore === 0 || isNaN(cpuScore) || isNaN(gpuScore)) {
-            if (cpuScore === 0 || gpuScore === 0) return; 
-            alert("Por favor selecciona componentes válidos");
-            return;
-        }
+        if (cpuScore === 0 || gpuScore === 0) { alert("Selecciona componentes válidos"); return; }
 
-        // LÓGICA V2.4 (Estable)
+        // ENGINE V2.5
         let scaleFactor = 1.1; 
         if (gpuScore > 32000) { scaleFactor = 1.85; }       
         else if (gpuScore > 24000) { scaleFactor = 1.55; }  
@@ -190,30 +190,41 @@
         else { scaleFactor = 1.1; }                         
 
         const adjustedGpuScore = gpuScore * scaleFactor;
-        
         let resModifier = 1.0;
         if (resolution === 1440) resModifier = 0.85;
         if (resolution === 2160) resModifier = 0.65;
 
         const ratio = (cpuScore * resModifier) / adjustedGpuScore;
 
-        let titulo, texto, clase, colorBarra, porcentajeBarra;
+        let titulo, texto, clase, colorBarra, porcentajeBarra, linkCompra, textoCompra;
 
         if (ratio > 1.45) {
             clase = "warning";
-            titulo = "⚠️ GPU LIMITANTE (Cuello Gráfico)";
-            texto = "Tu CPU está sobrada. Podrías mejorar tu gráfica sin problemas.";
-            colorBarra = "#ffc107"; porcentajeBarra = "90%"; 
+            titulo = "⚠️ GPU LIMITANTE";
+            texto = "Tu CPU está sobrada. Podrías mejorar tu gráfica.";
+            colorBarra = "#ffc107"; porcentajeBarra = "90%";
+            // Lógica de Ventas: Si falta GPU, sugerimos buscar GPU
+            linkCompra = "https://www.amazon.com/s?k=tarjeta+grafica+gamer&tag=leicecho-20"; // Link genérico por ahora
+            textoCompra = "🔥 Ver Tarjetas Gráficas en Oferta";
         } else if (ratio < 0.72) {
             clase = "danger";
-            titulo = "🛑 CPU LIMITANTE (Cuello de Procesador)";
-            texto = "Tu procesador sufre para mantener el ritmo de la gráfica.";
+            titulo = "🛑 CPU LIMITANTE";
+            texto = "Tu procesador sufre. Es recomendable actualizar.";
             colorBarra = "#dc3545"; porcentajeBarra = "20%";
+            // Lógica de Ventas: Si falta CPU, sugerimos buscar CPU
+            linkCompra = "https://www.amazon.com/s?k=procesador+gamer&tag=leicecho-20"; 
+            textoCompra = "🔥 Ver Procesadores Recomendados";
         } else {
             clase = "safe";
             titulo = "✅ SINERGIA EXCELENTE";
-            texto = "¡Configuración equilibrada! Buen trabajo.";
+            texto = "¡Configuración equilibrada! No necesitas gastar dinero.";
             colorBarra = "#28a745"; porcentajeBarra = "50%";
+            linkCompra = ""; // No mostramos botón si todo está bien
+        }
+
+        let botonHtml = "";
+        if (linkCompra !== "") {
+            botonHtml = `<a href="${linkCompra}" target="_blank" id="amazonBtn">${textoCompra}</a>`;
         }
 
         resultDiv.style.display = "block";
@@ -222,12 +233,10 @@
             <h2 style="margin-top:0">${titulo}</h2>
             <p>${texto}</p>
             <div class="meter-container"><div class="meter-fill" style="width: ${porcentajeBarra}; background: ${colorBarra};"></div></div>
+            ${botonHtml}
             <div class="debug-info">Engine V2.5 (Gaming Tuned) | Ratio: ${ratio.toFixed(2)}</div>
         `;
     }
 </script>
-    
 </body>
 </html>
-
-
