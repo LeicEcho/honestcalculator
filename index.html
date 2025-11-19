@@ -79,25 +79,29 @@
 </div>
 
 <script>
-    // --- BASE DE DATOS EXPANDIDA V2.4 ---
+    // --- BASE DE DATOS V2.5 (GAMING TUNED) ---
+    // Ajuste manual: Los puntajes de X3D y CPUs High-End han sido inflados 
+    // para reflejar rendimiento en JUEGOS, no en renderizado.
     const hardwareData = {
       "cpus": [
         { "name": "--- GAMA ULTRA / ENTHUSIAST ---", "score": 0 },
-        { "name": "AMD Ryzen 9 9950X3D", "score": 70179 },
-        { "name": "Intel Core Ultra 9 285K", "score": 67566 },
-        { "name": "AMD Ryzen 9 7950X", "score": 63000 },
-        { "name": "Intel Core i9-13900K", "score": 60000 },
+        // El 7800X3D es el rey del gaming, le damos puntaje GOD TIER manual
+        { "name": "AMD Ryzen 7 7800X3D (God Tier Gaming)", "score": 85000 }, 
+        { "name": "AMD Ryzen 9 7950X3D", "score": 82000 },
+        { "name": "Intel Core i9-14900K / 13900K", "score": 78000 },
+        { "name": "Intel Core Ultra 9 285K", "score": 75000 },
         
         { "name": "--- GAMA ALTA (High End) ---", "score": 0 },
-        { "name": "AMD Ryzen 7 7800X3D (God Tier)", "score": 35000 },
-        { "name": "Intel Core i7-13700K", "score": 46000 },
-        { "name": "AMD Ryzen 7 5800X3D", "score": 28295 },
-        { "name": "Intel Core i5-13600K", "score": 38000 },
+        { "name": "Intel Core i7-14700K / 13700K", "score": 60000 },
+        // El 5800X3D rinde mucho más en juegos que en benchmarks
+        { "name": "AMD Ryzen 7 5800X3D", "score": 55000 }, 
+        { "name": "Intel Core i5-13600K", "score": 45000 },
+        { "name": "AMD Ryzen 7 7700X", "score": 42000 },
         { "name": "AMD Ryzen 7 5700X", "score": 26000 },
         
         { "name": "--- GAMA MEDIA (Mainstream) ---", "score": 0 },
-        { "name": "Intel Core i5-13400F", "score": 25026 },
         { "name": "AMD Ryzen 5 7600 / 7600X", "score": 28000 },
+        { "name": "Intel Core i5-13400F", "score": 25026 },
         { "name": "AMD Ryzen 5 5600 / 5600X (Rey Calidad-Precio)", "score": 21549 },
         { "name": "Intel Core i5-12400F", "score": 19522 },
         { "name": "Intel Core i5-11400F", "score": 17000 },
@@ -106,12 +110,12 @@
         { "name": "--- GAMA DE ENTRADA / ANTIGUOS ---", "score": 0 },
         { "name": "AMD Ryzen 5 3600 / 2600", "score": 17197 },
         { "name": "Intel Core i5-10400F", "score": 12500 },
-        { "name": "AMD Ryzen 5 1600 (AF)", "score": 12000 },
         { "name": "Intel Core i3-12100F", "score": 14000 },
-        { "name": "Intel Core i3-10100F", "score": 8800 },
+        { "name": "AMD Ryzen 5 1600 (AF)", "score": 12000 },
         { "name": "Intel Core i7-7700K", "score": 9000 },
-        { "name": "AMD Ryzen 3 3200G", "score": 7200 },
+        { "name": "Intel Core i3-10100F", "score": 8800 },
         { "name": "Intel Core i5-9400F", "score": 9500 },
+        { "name": "AMD Ryzen 3 3200G", "score": 7200 },
         { "name": "Intel Core i3-10110U (Laptop)", "score": 3841 }
       ],
       "gpus": [
@@ -178,14 +182,12 @@
             return;
         }
 
-        // --- LÓGICA DINÁMICA V2.4 (Patch: Curva Suavizada) ---
+        // LÓGICA V2.4 (Estable)
         let scaleFactor = 1.1; 
-        
-        // Ajuste de curvas corregido
-        if (gpuScore > 32000) { scaleFactor = 1.85; }       // Ultra (4090, etc)
-        else if (gpuScore > 24000) { scaleFactor = 1.55; }  // High (4070, etc)
-        else if (gpuScore > 14000) { scaleFactor = 1.25; }  // Mid (4060, 3060) -> BAJAMOS ESTE VALOR
-        else { scaleFactor = 1.1; }                         // Low
+        if (gpuScore > 32000) { scaleFactor = 1.85; }       
+        else if (gpuScore > 24000) { scaleFactor = 1.55; }  
+        else if (gpuScore > 14000) { scaleFactor = 1.25; }  
+        else { scaleFactor = 1.1; }                         
 
         const adjustedGpuScore = gpuScore * scaleFactor;
         
@@ -197,13 +199,12 @@
 
         let titulo, texto, clase, colorBarra, porcentajeBarra;
 
-        // Ajuste de umbrales para ser menos estricto
         if (ratio > 1.45) {
             clase = "warning";
             titulo = "⚠️ GPU LIMITANTE (Cuello Gráfico)";
             texto = "Tu CPU está sobrada. Podrías mejorar tu gráfica sin problemas.";
             colorBarra = "#ffc107"; porcentajeBarra = "90%"; 
-        } else if (ratio < 0.72) { // Bajamos el límite de error de 0.75 a 0.72
+        } else if (ratio < 0.72) {
             clase = "danger";
             titulo = "🛑 CPU LIMITANTE (Cuello de Procesador)";
             texto = "Tu procesador sufre para mantener el ritmo de la gráfica.";
@@ -221,11 +222,12 @@
             <h2 style="margin-top:0">${titulo}</h2>
             <p>${texto}</p>
             <div class="meter-container"><div class="meter-fill" style="width: ${porcentajeBarra}; background: ${colorBarra};"></div></div>
-            <div class="debug-info">Engine V2.4 | Escala: x${scaleFactor} | Ratio: ${ratio.toFixed(2)}</div>
+            <div class="debug-info">Engine V2.5 (Gaming Tuned) | Ratio: ${ratio.toFixed(2)}</div>
         `;
     }
 </script>
     
 </body>
 </html>
+
 
