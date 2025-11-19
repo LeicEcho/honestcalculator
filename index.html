@@ -79,7 +79,7 @@
 </div>
 
 <script>
-    // --- BASE DE DATOS EXPANDIDA (TOP 50 STEAM + LATAM MARKET) ---
+    // --- BASE DE DATOS EXPANDIDA V2.4 ---
     const hardwareData = {
       "cpus": [
         { "name": "--- GAMA ULTRA / ENTHUSIAST ---", "score": 0 },
@@ -89,7 +89,7 @@
         { "name": "Intel Core i9-13900K", "score": 60000 },
         
         { "name": "--- GAMA ALTA (High End) ---", "score": 0 },
-        { "name": "AMD Ryzen 7 7800X3D (God Tier Gaming)", "score": 35000 },
+        { "name": "AMD Ryzen 7 7800X3D (God Tier)", "score": 35000 },
         { "name": "Intel Core i7-13700K", "score": 46000 },
         { "name": "AMD Ryzen 7 5800X3D", "score": 28295 },
         { "name": "Intel Core i5-13600K", "score": 38000 },
@@ -103,33 +103,33 @@
         { "name": "Intel Core i5-11400F", "score": 17000 },
         { "name": "AMD Ryzen 5 5500", "score": 19000 },
         
-        { "name": "--- GAMA DE ENTRADA / ANTIGUOS (Legacy) ---", "score": 0 },
+        { "name": "--- GAMA DE ENTRADA / ANTIGUOS ---", "score": 0 },
         { "name": "AMD Ryzen 5 3600 / 2600", "score": 17197 },
         { "name": "Intel Core i5-10400F", "score": 12500 },
         { "name": "AMD Ryzen 5 1600 (AF)", "score": 12000 },
-        { "name": "Intel Core i3-12100F (El pequeño gigante)", "score": 14000 },
+        { "name": "Intel Core i3-12100F", "score": 14000 },
         { "name": "Intel Core i3-10100F", "score": 8800 },
-        { "name": "Intel Core i7-7700K (Leyenda vieja)", "score": 9000 },
-        { "name": "AMD Ryzen 3 3200G (APU)", "score": 7200 },
+        { "name": "Intel Core i7-7700K", "score": 9000 },
+        { "name": "AMD Ryzen 3 3200G", "score": 7200 },
         { "name": "Intel Core i5-9400F", "score": 9500 },
-        { "name": "Intel Core i3-10110U (Laptop Básica)", "score": 3841 }
+        { "name": "Intel Core i3-10110U (Laptop)", "score": 3841 }
       ],
       "gpus": [
-        { "name": "--- GAMA ULTRA (4K Monsters) ---", "score": 0 },
+        { "name": "--- GAMA ULTRA ---", "score": 0 },
         { "name": "GeForce RTX 4090", "score": 38121 },
         { "name": "GeForce RTX 4080 / Super", "score": 34463 },
         { "name": "Radeon RX 7900 XTX", "score": 31000 },
-        { "name": "GeForce RTX 4070 Ti", "score": 29000 },
         
-        { "name": "--- GAMA ALTA (1440p Killers) ---", "score": 0 },
+        { "name": "--- GAMA ALTA ---", "score": 0 },
+        { "name": "GeForce RTX 4070 Ti", "score": 29000 },
         { "name": "GeForce RTX 4070", "score": 26000 },
         { "name": "Radeon RX 7800 XT", "score": 25000 },
         { "name": "GeForce RTX 3080", "score": 24000 },
-        { "name": "GeForce RTX 4060 Ti", "score": 23000 },
-        { "name": "Radeon RX 6700 XT", "score": 22000 },
         
-        { "name": "--- GAMA MEDIA (1080p Kings) ---", "score": 0 },
+        { "name": "--- GAMA MEDIA ---", "score": 0 },
+        { "name": "GeForce RTX 4060 Ti", "score": 23000 },
         { "name": "GeForce RTX 4060", "score": 22651 },
+        { "name": "Radeon RX 6700 XT", "score": 22000 },
         { "name": "GeForce RTX 3060 Ti", "score": 20312 },
         { "name": "Radeon RX 7600", "score": 17000 },
         { "name": "Radeon RX 6600 XT", "score": 16455 },
@@ -137,28 +137,24 @@
         { "name": "GeForce RTX 2060 / Super", "score": 14000 },
         { "name": "Radeon RX 6600", "score": 13500 },
         
-        { "name": "--- GAMA BAJA / BUDGET (Survivors) ---", "score": 0 },
-        { "name": "GeForce GTX 1660 Super / Ti", "score": 12500 },
-        { "name": "GeForce GTX 1070", "score": 13000 },
+        { "name": "--- GAMA BAJA ---", "score": 0 },
+        { "name": "GeForce GTX 1660 Super", "score": 12500 },
         { "name": "GeForce RTX 3050", "score": 12000 },
-        { "name": "GeForce GTX 1650 Super", "score": 9800 },
         { "name": "GeForce GTX 1060 6GB", "score": 9813 },
-        { "name": "Radeon RX 580 / 570 (8GB)", "score": 8700 },
-        { "name": "GeForce GTX 1650 (Normal)", "score": 7500 },
-        { "name": "GeForce GTX 1050 Ti", "score": 6000 },
-        { "name": "Radeon RX 550 / GT 1030", "score": 2800 }
+        { "name": "Radeon RX 580 / 570", "score": 8700 },
+        { "name": "GeForce GTX 1650", "score": 7500 },
+        { "name": "GeForce GTX 1050 Ti", "score": 6000 }
       ]
     };
 
     const cpuSelect = document.getElementById('cpuSelect');
     const gpuSelect = document.getElementById('gpuSelect');
 
-    // Función para llenar listas ignorando los separadores (score 0)
     function llenarLista(select, datos) {
         datos.forEach(item => {
             const option = new Option(item.name, item.score);
             if (item.score === 0) {
-                option.disabled = true; // Deshabilitar títulos de sección
+                option.disabled = true;
                 option.style.fontWeight = "bold";
                 option.style.color = "#00d2ff";
                 option.style.backgroundColor = "#222";
@@ -182,11 +178,14 @@
             return;
         }
 
+        // --- LÓGICA DINÁMICA V2.4 (Patch: Curva Suavizada) ---
         let scaleFactor = 1.1; 
-        if (gpuScore > 30000) { scaleFactor = 1.9; }       
-        else if (gpuScore > 20000) { scaleFactor = 1.6; }  
-        else if (gpuScore > 10000) { scaleFactor = 1.35; } 
-        else { scaleFactor = 1.1; }                        
+        
+        // Ajuste de curvas corregido
+        if (gpuScore > 32000) { scaleFactor = 1.85; }       // Ultra (4090, etc)
+        else if (gpuScore > 24000) { scaleFactor = 1.55; }  // High (4070, etc)
+        else if (gpuScore > 14000) { scaleFactor = 1.25; }  // Mid (4060, 3060) -> BAJAMOS ESTE VALOR
+        else { scaleFactor = 1.1; }                         // Low
 
         const adjustedGpuScore = gpuScore * scaleFactor;
         
@@ -198,20 +197,21 @@
 
         let titulo, texto, clase, colorBarra, porcentajeBarra;
 
+        // Ajuste de umbrales para ser menos estricto
         if (ratio > 1.45) {
             clase = "warning";
             titulo = "⚠️ GPU LIMITANTE (Cuello Gráfico)";
-            texto = "Tu CPU está sobrada para esta gráfica. No es malo, pero podrías actualizar tu gráfica sin cambiar el procesador.";
+            texto = "Tu CPU está sobrada. Podrías mejorar tu gráfica sin problemas.";
             colorBarra = "#ffc107"; porcentajeBarra = "90%"; 
-        } else if (ratio < 0.75) {
+        } else if (ratio < 0.72) { // Bajamos el límite de error de 0.75 a 0.72
             clase = "danger";
             titulo = "🛑 CPU LIMITANTE (Cuello de Procesador)";
-            texto = "Tu procesador no puede seguirle el ritmo a la gráfica. Tendrás FPS inestables y tirones.";
+            texto = "Tu procesador sufre para mantener el ritmo de la gráfica.";
             colorBarra = "#dc3545"; porcentajeBarra = "20%";
         } else {
             clase = "safe";
             titulo = "✅ SINERGIA EXCELENTE";
-            texto = "¡Gran equilibrio! Tus componentes trabajan en armonía. Es una configuración inteligente.";
+            texto = "¡Configuración equilibrada! Buen trabajo.";
             colorBarra = "#28a745"; porcentajeBarra = "50%";
         }
 
@@ -221,10 +221,11 @@
             <h2 style="margin-top:0">${titulo}</h2>
             <p>${texto}</p>
             <div class="meter-container"><div class="meter-fill" style="width: ${porcentajeBarra}; background: ${colorBarra};"></div></div>
-            <div class="debug-info">Leicecho Engine V2.3 | Escala: x${scaleFactor} | Ratio: ${ratio.toFixed(2)}</div>
+            <div class="debug-info">Engine V2.4 | Escala: x${scaleFactor} | Ratio: ${ratio.toFixed(2)}</div>
         `;
     }
 </script>
-
+    
 </body>
 </html>
+
