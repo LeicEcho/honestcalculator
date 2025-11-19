@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analizador de Cuello de Botella V2.0</title>
+    <title>Analizador de Cuello de Botella Honesto</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 600px; background: #1e1e1e; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #333; }
@@ -20,7 +20,6 @@
 
         #resultado { margin-top: 25px; padding: 20px; border-radius: 10px; display: none; animation: fadeIn 0.5s ease; }
         
-        /* Estados del Resultado */
         .safe { background: rgba(21, 87, 36, 0.2); border: 1px solid #155724; color: #75b798; }
         .warning { background: rgba(133, 100, 4, 0.2); border: 1px solid #856404; color: #ffdf7e; }
         .danger { background: rgba(114, 28, 36, 0.2); border: 1px solid #721c24; color: #ea868f; }
@@ -36,17 +35,17 @@
 <body>
 
 <div class="container">
-    <h1>⚡ Bottleneck Calc V2</h1>
-    <p class="subtitle">Algoritmo Dinámico por Gemini & Ingeniero Usuario</p>
+    <h1>⚡ Bottleneck Calc V2.2</h1>
+    <p class="subtitle">Base de datos actualizada (Steam Charts 2025)</p>
 
     <div class="input-group">
         <label>1. Tu Procesador (CPU)</label>
-        <select id="cpuSelect"></select>
+        <select id="cpuSelect"><option value="0">-- Selecciona CPU --</option></select>
     </div>
 
     <div class="input-group">
         <label>2. Tu Tarjeta Gráfica (GPU)</label>
-        <select id="gpuSelect"></select>
+        <select id="gpuSelect"><option value="0">-- Selecciona GPU --</option></select>
     </div>
 
     <div class="input-group">
@@ -64,19 +63,35 @@
 </div>
 
 <script>
-    // BASE DE DATOS COMPLETA (Tus hallazgos)
+    // --- BASE DE DATOS FUSIONADA (ORDENADA POR POTENCIA) ---
     const hardwareData = {
       "cpus": [
-        { "name": "Intel Core Ultra 9 285K (Gama Alta)", "score": 67566 },
-        { "name": "AMD Ryzen 9 9950X3D (Gama Alta)", "score": 70179 },
-        { "name": "AMD Ryzen 5 5600 (Gama Media)", "score": 21549 },
-        { "name": "Intel Core i3-10110U (Laptop/Baja)", "score": 3841 },
-        { "name": "Intel Core i3-10100F (Escritorio/Baja)", "score": 8800 } // Agregué la versión desktop para comparar
+        // Gama Ultra Alta
+        { "name": "AMD Ryzen 9 9950X3D", "score": 70179 },
+        { "name": "Intel Core Ultra 9 285K", "score": 67566 },
+        // Gama Alta / Media Alta
+        { "name": "AMD Ryzen 7 5800X3D (Gamer Favorite)", "score": 28295 },
+        { "name": "Intel Core i5-13400F", "score": 25026 },
+        { "name": "AMD Ryzen 5 5600 (Best Seller)", "score": 21549 },
+        { "name": "Intel Core i5-12400F", "score": 19522 },
+        { "name": "AMD Ryzen 5 3600 / PRO", "score": 17197 },
+        // Gama Baja / Entrada
+        { "name": "Intel Core i3-10100F", "score": 8800 },
+        { "name": "Intel Core i3-10110U (Laptop)", "score": 3841 }
       ],
       "gpus": [
-        { "name": "GeForce RTX 4090 (Monstruo)", "score": 38121 },
-        { "name": "GeForce RTX 3060 (Gama Media)", "score": 15206 },
-        { "name": "GeForce GTX 1650 Ti (Gama Baja)", "score": 7520 }
+        // Gama Ultra Alta
+        { "name": "GeForce RTX 4090", "score": 38121 },
+        { "name": "GeForce RTX 4080", "score": 34463 },
+        { "name": "GeForce RTX 5070 Ti (Next Gen)", "score": 32621 },
+        // Gama Media / Popular
+        { "name": "GeForce RTX 4060", "score": 22651 },
+        { "name": "GeForce RTX 3060 Ti", "score": 20312 },
+        { "name": "Radeon RX 6600 XT", "score": 16455 },
+        { "name": "GeForce RTX 3060 (La más usada en Steam)", "score": 15206 },
+        // Gama Baja / Legendaria
+        { "name": "GeForce GTX 1060 6GB", "score": 9813 }, 
+        { "name": "GeForce GTX 1650 Ti", "score": 7520 }
       ]
     };
 
@@ -93,28 +108,23 @@
         const resolution = parseInt(document.getElementById('resolution').value);
         const resultDiv = document.getElementById('resultado');
 
-        // --- LÓGICA DINÁMICA V2 (El Corazón del Algoritmo) ---
-        
-        // Paso 1: Determinar Factor de Escala según la potencia de la GPU
-        // Las GPUs High-End escalan diferente en PassMark que las Low-End
-        let scaleFactor = 1.1; // Valor base para gama baja
-
-        if (gpuScore > 25000) {
-            scaleFactor = 1.9; // Para RTX 4090, etc.
-        } else if (gpuScore > 10000) {
-            scaleFactor = 1.4; // Para RTX 3060, etc. (1.41 dio el cálculo real)
-        } else {
-            scaleFactor = 1.15; // Para gama baja (Ajuste fino)
+        if (cpuScore === 0 || gpuScore === 0) {
+            alert("Por favor selecciona ambos componentes");
+            return;
         }
+
+        // --- LÓGICA DINÁMICA V2.1 ---
+        let scaleFactor = 1.1; 
+        if (gpuScore > 25000) { scaleFactor = 1.9; }      // Gama Ultra
+        else if (gpuScore > 10000) { scaleFactor = 1.4; } // Gama Media
+        else { scaleFactor = 1.15; }                      // Gama Baja
 
         const adjustedGpuScore = gpuScore * scaleFactor;
 
-        // Paso 2: Modificador de Resolución
-        let resModifier = 1.0; // 1080p
+        let resModifier = 1.0;
         if (resolution === 1440) resModifier = 0.85;
         if (resolution === 2160) resModifier = 0.65;
 
-        // Paso 3: El Ratio Final
         const ratio = (cpuScore * resModifier) / adjustedGpuScore;
 
         // Diagnóstico
@@ -123,37 +133,27 @@
         if (ratio > 1.35) {
             clase = "warning";
             titulo = "⚠️ GPU LIMITANTE (Botella en Gráfica)";
-            texto = "Tu CPU está sobrada. Podrías poner una tarjeta gráfica más potente sin problemas. No es grave, solo estás desaprovechando procesador.";
-            colorBarra = "#ffc107"; // Amarillo
-            porcentajeBarra = "90%"; 
-        } else if (ratio < 0.75) {
+            texto = "Tu CPU está sobrada. Podrías poner una tarjeta gráfica más potente sin problemas.";
+            colorBarra = "#ffc107"; porcentajeBarra = "90%"; 
+        } else if (ratio < 0.80) { // Ajusté un poco el límite inferior
             clase = "danger";
             titulo = "🛑 CPU LIMITANTE (Botella en Procesador)";
-            texto = "Atención: Tu procesador es demasiado lento para esta gráfica en esta resolución. Sufrirás tirones y caídas de FPS.";
-            colorBarra = "#dc3545"; // Rojo
-            porcentajeBarra = "20%";
+            texto = "Tu procesador es demasiado lento para esta gráfica en esta resolución. Sufrirás tirones.";
+            colorBarra = "#dc3545"; porcentajeBarra = "20%";
         } else {
             clase = "safe";
             titulo = "✅ SINERGIA EXCELENTE";
-            texto = "¡Perfecto! Tus componentes están equilibrados. Ninguno frena drásticamente al otro.";
-            colorBarra = "#28a745"; // Verde
-            porcentajeBarra = "50%";
+            texto = "¡Perfecto! Tus componentes están equilibrados. Buen trabajo de selección.";
+            colorBarra = "#28a745"; porcentajeBarra = "50%";
         }
 
-        // Renderizar
         resultDiv.style.display = "block";
         resultDiv.className = clase;
         resultDiv.innerHTML = `
             <h2 style="margin-top:0">${titulo}</h2>
             <p>${texto}</p>
-            <div class="meter-container">
-                <div class="meter-fill" style="width: ${porcentajeBarra}; background: ${colorBarra};"></div>
-            </div>
-            <div class="debug-info">
-                Algoritmo: V2.1 Dynamic<br>
-                Factor Escala Aplicado: x${scaleFactor}<br>
-                Ratio Final: ${ratio.toFixed(2)} (Ideal: 0.8 - 1.3)
-            </div>
+            <div class="meter-container"><div class="meter-fill" style="width: ${porcentajeBarra}; background: ${colorBarra};"></div></div>
+            <div class="debug-info">V2.2 | Escala: x${scaleFactor} | Ratio: ${ratio.toFixed(2)}</div>
         `;
     }
 </script>
