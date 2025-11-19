@@ -1,114 +1,95 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculadora de Cuello de Botella (Bottleneck) precisa y honesta. Descubre si tu CPU frena a tu GPU con datos reales de benchmarks.">
-    <meta name="author" content="Leicecho">
-    <meta name="keywords" content="bottleneck calculator, cuello de botella pc, calculadora cpu gpu, bottleneck checker">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://leicecho.github.io/honestcalculator/">
-    <meta property="og:title" content="⚡ Analizador de Cuello de Botella Honesto">
-    <meta property="og:description" content="¿Tu PC está equilibrada? Prueba esta herramienta gratuita basada en algoritmos dinámicos y benchmarks reales. Sin mentiras.">
-    
-    <title>Analizador de Cuello de Botella Honesto | Leicecho</title>
-    
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; padding: 20px; display: flex; justify-content: center; min-height: 100vh; align-items: center; margin: 0; }
-        .container { width: 100%; max-width: 600px; background: #1e1e1e; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid #333; }
-        h1 { text-align: center; color: #00d2ff; margin-bottom: 5px; font-size: 1.8rem; }
-        .subtitle { text-align: center; color: #888; font-size: 0.9rem; margin-bottom: 30px; }
-        
-        .input-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #bbb; }
-        select { width: 100%; padding: 12px; background: #2c2c2c; color: #fff; border: 1px solid #444; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s; }
-        select:focus { border-color: #00d2ff; background: #333; }
-
-        button { width: 100%; padding: 15px; margin-top: 10px; background: linear-gradient(45deg, #00d2ff, #007bff); color: #fff; font-weight: bold; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5); }
-
-        #resultado { margin-top: 25px; padding: 20px; border-radius: 10px; display: none; animation: fadeIn 0.5s ease; }
-        
-        .safe { background: rgba(21, 87, 36, 0.2); border: 1px solid #155724; color: #75b798; }
-        .warning { background: rgba(133, 100, 4, 0.2); border: 1px solid #856404; color: #ffdf7e; }
-        .danger { background: rgba(114, 28, 36, 0.2); border: 1px solid #721c24; color: #ea868f; }
-
-        .meter-container { width: 100%; background: #444; height: 10px; border-radius: 5px; margin-top: 15px; overflow: hidden; position: relative; }
-        .meter-fill { height: 100%; background: #888; width: 50%; transition: width 1s ease; }
-        
-        .debug-info { font-size: 0.75rem; color: #555; margin-top: 20px; text-align: right; font-family: monospace; }
-        
-        footer { text-align: center; margin-top: 30px; color: #555; font-size: 0.8rem; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>⚡ Bottleneck Calc V1.0</h1>
-    <p class="subtitle">Análisis de Hardware Honesto por <strong>Leicecho</strong></p>
-
-    <div class="input-group">
-        <label>1. Tu Procesador (CPU)</label>
-        <select id="cpuSelect"><option value="0">-- Selecciona CPU --</option></select>
-    </div>
-
-    <div class="input-group">
-        <label>2. Tu Tarjeta Gráfica (GPU)</label>
-        <select id="gpuSelect"><option value="0">-- Selecciona GPU --</option></select>
-    </div>
-
-    <div class="input-group">
-        <label>3. Resolución de Monitor</label>
-        <select id="resolution">
-            <option value="1080">1080p Full HD (Estándar)</option>
-            <option value="1440">1440p Quad HD (Gamer)</option>
-            <option value="2160">4K Ultra HD (Entusiasta)</option>
-        </select>
-    </div>
-
-    <button onclick="calcularBottleneck()">ANALIZAR COMPATIBILIDAD</button>
-
-    <div id="resultado"></div>
-    
-    <footer>
-        &copy; 2025 Leicecho. Datos basados en PassMark™ & Steam Hardware Survey.
-    </footer>
-</div>
-
 <script>
+    // --- BASE DE DATOS EXPANDIDA (TOP 50 STEAM + LATAM MARKET) ---
+    // Scores basados en PassMark Multi-Thread (CPU) y G3D Mark (GPU) - Nov 2025
     const hardwareData = {
       "cpus": [
+        { "name": "--- GAMA ULTRA / ENTHUSIAST ---", "score": 0 },
         { "name": "AMD Ryzen 9 9950X3D", "score": 70179 },
         { "name": "Intel Core Ultra 9 285K", "score": 67566 },
-        { "name": "AMD Ryzen 7 5800X3D (Gamer Favorite)", "score": 28295 },
+        { "name": "AMD Ryzen 9 7950X", "score": 63000 },
+        { "name": "Intel Core i9-13900K", "score": 60000 },
+        
+        { "name": "--- GAMA ALTA (High End) ---", "score": 0 },
+        { "name": "AMD Ryzen 7 7800X3D (God Tier Gaming)", "score": 35000 },
+        { "name": "Intel Core i7-13700K", "score": 46000 },
+        { "name": "AMD Ryzen 7 5800X3D", "score": 28295 },
+        { "name": "Intel Core i5-13600K", "score": 38000 },
+        { "name": "AMD Ryzen 7 5700X", "score": 26000 },
+        
+        { "name": "--- GAMA MEDIA (Mainstream) ---", "score": 0 },
         { "name": "Intel Core i5-13400F", "score": 25026 },
-        { "name": "AMD Ryzen 5 5600 (Best Seller)", "score": 21549 },
+        { "name": "AMD Ryzen 5 7600 / 7600X", "score": 28000 },
+        { "name": "AMD Ryzen 5 5600 / 5600X (Rey Calidad-Precio)", "score": 21549 },
         { "name": "Intel Core i5-12400F", "score": 19522 },
-        { "name": "AMD Ryzen 5 3600 / PRO", "score": 17197 },
+        { "name": "Intel Core i5-11400F", "score": 17000 },
+        { "name": "AMD Ryzen 5 5500", "score": 19000 },
+        
+        { "name": "--- GAMA DE ENTRADA / ANTIGUOS (Legacy) ---", "score": 0 },
+        { "name": "AMD Ryzen 5 3600 / 2600", "score": 17197 },
+        { "name": "Intel Core i5-10400F", "score": 12500 },
+        { "name": "AMD Ryzen 5 1600 (AF)", "score": 12000 },
+        { "name": "Intel Core i3-12100F (El pequeño gigante)", "score": 14000 },
         { "name": "Intel Core i3-10100F", "score": 8800 },
-        { "name": "Intel Core i3-10110U (Laptop)", "score": 3841 }
+        { "name": "Intel Core i7-7700K (Leyenda vieja)", "score": 9000 },
+        { "name": "AMD Ryzen 3 3200G (APU)", "score": 7200 },
+        { "name": "Intel Core i5-9400F", "score": 9500 },
+        { "name": "Intel Core i3-10110U (Laptop Básica)", "score": 3841 }
       ],
       "gpus": [
+        { "name": "--- GAMA ULTRA (4K Monsters) ---", "score": 0 },
         { "name": "GeForce RTX 4090", "score": 38121 },
-        { "name": "GeForce RTX 4080", "score": 34463 },
-        { "name": "GeForce RTX 5070 Ti (Next Gen)", "score": 32621 },
+        { "name": "GeForce RTX 4080 / Super", "score": 34463 },
+        { "name": "Radeon RX 7900 XTX", "score": 31000 },
+        { "name": "GeForce RTX 4070 Ti", "score": 29000 },
+        
+        { "name": "--- GAMA ALTA (1440p Killers) ---", "score": 0 },
+        { "name": "GeForce RTX 4070", "score": 26000 },
+        { "name": "Radeon RX 7800 XT", "score": 25000 },
+        { "name": "GeForce RTX 3080", "score": 24000 },
+        { "name": "GeForce RTX 4060 Ti", "score": 23000 },
+        { "name": "Radeon RX 6700 XT", "score": 22000 },
+        
+        { "name": "--- GAMA MEDIA (1080p Kings) ---", "score": 0 },
         { "name": "GeForce RTX 4060", "score": 22651 },
         { "name": "GeForce RTX 3060 Ti", "score": 20312 },
+        { "name": "Radeon RX 7600", "score": 17000 },
         { "name": "Radeon RX 6600 XT", "score": 16455 },
-        { "name": "GeForce RTX 3060 (La más usada)", "score": 15206 },
-        { "name": "GeForce GTX 1060 6GB", "score": 9813 }, 
-        { "name": "GeForce GTX 1650 Ti", "score": 7520 }
+        { "name": "GeForce RTX 3060 12GB", "score": 15206 },
+        { "name": "GeForce RTX 2060 / Super", "score": 14000 },
+        { "name": "Radeon RX 6600", "score": 13500 },
+        
+        { "name": "--- GAMA BAJA / BUDGET (Survivors) ---", "score": 0 },
+        { "name": "GeForce GTX 1660 Super / Ti", "score": 12500 },
+        { "name": "GeForce GTX 1070", "score": 13000 },
+        { "name": "GeForce RTX 3050", "score": 12000 },
+        { "name": "GeForce GTX 1650 Super", "score": 9800 },
+        { "name": "GeForce GTX 1060 6GB", "score": 9813 },
+        { "name": "Radeon RX 580 / 570 (8GB)", "score": 8700 },
+        { "name": "GeForce GTX 1650 (Normal)", "score": 7500 },
+        { "name": "GeForce GTX 1050 Ti", "score": 6000 },
+        { "name": "Radeon RX 550 / GT 1030", "score": 2800 }
       ]
     };
 
     const cpuSelect = document.getElementById('cpuSelect');
     const gpuSelect = document.getElementById('gpuSelect');
 
-    hardwareData.cpus.forEach(c => cpuSelect.add(new Option(c.name, c.score)));
-    hardwareData.gpus.forEach(g => gpuSelect.add(new Option(g.name, g.score)));
+    // Función para llenar listas ignorando los separadores (score 0)
+    function llenarLista(select, datos) {
+        datos.forEach(item => {
+            const option = new Option(item.name, item.score);
+            if (item.score === 0) {
+                option.disabled = true; // Deshabilitar títulos de sección
+                option.style.fontWeight = "bold";
+                option.style.color = "#00d2ff";
+                option.style.backgroundColor = "#222";
+            }
+            select.add(option);
+        });
+    }
+
+    llenarLista(cpuSelect, hardwareData.cpus);
+    llenarLista(gpuSelect, hardwareData.gpus);
 
     function calcularBottleneck() {
         const cpuScore = parseInt(cpuSelect.value);
@@ -116,17 +97,24 @@
         const resolution = parseInt(document.getElementById('resolution').value);
         const resultDiv = document.getElementById('resultado');
 
-        if (cpuScore === 0 || gpuScore === 0) {
-            alert("Por favor selecciona ambos componentes");
+        if (cpuScore === 0 || gpuScore === 0 || isNaN(cpuScore) || isNaN(gpuScore)) {
+            // Evitar que calculen seleccionando un título
+            if (cpuScore === 0 || gpuScore === 0) return; 
+            alert("Por favor selecciona componentes válidos");
             return;
         }
 
+        // --- LÓGICA DINÁMICA V2.3 (Ajustada para Gamers Low-End) ---
         let scaleFactor = 1.1; 
-        if (gpuScore > 25000) { scaleFactor = 1.9; }
-        else if (gpuScore > 10000) { scaleFactor = 1.4; }
-        else { scaleFactor = 1.15; }
+        
+        // Ajuste fino de curvas de potencia
+        if (gpuScore > 30000) { scaleFactor = 1.9; }       // Ultra High
+        else if (gpuScore > 20000) { scaleFactor = 1.6; }  // High
+        else if (gpuScore > 10000) { scaleFactor = 1.35; } // Mid
+        else { scaleFactor = 1.1; }                        // Low / Entry
 
         const adjustedGpuScore = gpuScore * scaleFactor;
+        
         let resModifier = 1.0;
         if (resolution === 1440) resModifier = 0.85;
         if (resolution === 2160) resModifier = 0.65;
@@ -135,20 +123,21 @@
 
         let titulo, texto, clase, colorBarra, porcentajeBarra;
 
-        if (ratio > 1.35) {
+        // Calibración de zonas de diagnóstico
+        if (ratio > 1.45) {
             clase = "warning";
-            titulo = "⚠️ GPU LIMITANTE";
-            texto = "Tu CPU está sobrada. Podrías poner una tarjeta gráfica más potente sin problemas.";
+            titulo = "⚠️ GPU LIMITANTE (Cuello Gráfico)";
+            texto = "Tu CPU está sobrada para esta gráfica. No es malo, pero podrías actualizar tu gráfica sin cambiar el procesador.";
             colorBarra = "#ffc107"; porcentajeBarra = "90%"; 
-        } else if (ratio < 0.80) {
+        } else if (ratio < 0.75) {
             clase = "danger";
-            titulo = "🛑 CPU LIMITANTE";
-            texto = "Tu procesador es demasiado lento para esta gráfica. Sufrirás tirones.";
+            titulo = "🛑 CPU LIMITANTE (Cuello de Procesador)";
+            texto = "Tu procesador no puede seguirle el ritmo a la gráfica. Tendrás FPS inestables y tirones (stuttering) en juegos modernos.";
             colorBarra = "#dc3545"; porcentajeBarra = "20%";
         } else {
             clase = "safe";
             titulo = "✅ SINERGIA EXCELENTE";
-            texto = "¡Perfecto! Tus componentes están equilibrados.";
+            texto = "¡Gran equilibrio! Tus componentes trabajan en armonía. Es una configuración inteligente.";
             colorBarra = "#28a745"; porcentajeBarra = "50%";
         }
 
@@ -158,10 +147,4 @@
             <h2 style="margin-top:0">${titulo}</h2>
             <p>${texto}</p>
             <div class="meter-container"><div class="meter-fill" style="width: ${porcentajeBarra}; background: ${colorBarra};"></div></div>
-            <div class="debug-info">Leicecho Algoritmo | Ratio: ${ratio.toFixed(2)}</div>
-        `;
-    }
-</script>
-
-</body>
-</html>
+            <div class="debug-info">LeicEcho Engine V2.3 | Escala: x${scaleFactor} | Ratio: ${ratio
